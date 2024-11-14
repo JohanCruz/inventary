@@ -5,6 +5,7 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\facades\Validator;
+use Illuminate\Database\QueryException;
 
 class productController extends Controller
 {
@@ -110,14 +111,23 @@ class productController extends Controller
             ], 404);
         }
         
-        $product->delete();
-
-        $data = [
-            'message' => 'Producto deleted',
-            'status' => 200
-        ];
+        try {
+            $product->delete();
         
-        return response()->json($data, 200);
+
+            $data = [
+                'message' => 'Producto deleted',
+                'status' => 200
+            ];            
+            return response()->json($data, 200);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                'message' => 'Cannot be deleted because it has related records',
+                'success' => false
+            ], 409); 
+        }
 
     }
 }
