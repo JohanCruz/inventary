@@ -26,6 +26,7 @@ class productController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0'],
+            'price' => ['required', 'integer', 'min:0'],
         ]);
 
         if($validator->fails()){
@@ -41,6 +42,7 @@ class productController extends Controller
         $product = Product::create([
             'name' => $request->name,
             'quantity' => $request->quantity,
+            'price' => $request->price,
         ]);
 
         if(!$product){
@@ -62,9 +64,10 @@ class productController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['sometimes', 'string', 'max:255'],
             'quantity' => ['sometimes', 'integer', 'min:0'],
+            'price' => ['sometimes', 'integer', 'min:0'],
         ]);
         
-        if (empty($request->name) && empty($request->quantity)) {
+        if (empty($request->name) && empty($request->quantity) && empty($request->price)) {
             return response()->json([
                 'message' => 'At least one field is required'
             ], 422);
@@ -73,6 +76,7 @@ class productController extends Controller
         $product = Product::find($id);
         if(! empty($request->name)) $product->name = $request->name;
         if(! empty($request->quantity)) $product->quantity = $request->quantity;
+        if(! empty($request->price)) $product->price = $request->price;
 
         $product->save();
         $data = [
