@@ -9,21 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 
 class OrderController extends Controller
-{   /**
-    * @OA\Get(
-    *     path="/api/orders",
-    *     summary="Obtener todas las órdenes",
-    *     tags={"Orders"},
-    *     @OA\Response(
-    *         response=200,
-    *         description="Listado de órdenes exitosamente",
-    *         @OA\JsonContent(
-    *             type="array",
-    *             @OA\Items(ref="#/components/schemas/Order")
-    *         )
-    *     )
-    * )
-    */
+{      
     public function index(){
         // Obtener todas las órdenes junto con los productos relacionados
         $orders = Order::with('items.product')->get();
@@ -42,29 +28,6 @@ class OrderController extends Controller
         return response()->json($orders, 200);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/orders/{id}",
-     *     summary="Obtener una orden por ID",
-     *     tags={"Orders"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la orden",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Detalles de la orden",
-     *         @OA\JsonContent(ref="#/components/schemas/Order")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Orden no encontrada"
-     *     )
-     * )
-     */
     public function show($id){
         // Buscar la orden por ID junto con los productos relacionados
         $order = Order::with('items.product')->find($id);
@@ -86,35 +49,6 @@ class OrderController extends Controller
         return response()->json($order, 200);
     }
 
-    /**
-    * @OA\Post(
-    *     path="/api/orders",
-    *     summary="Crear una nueva orden",
-    *     tags={"Orders"},
-    *     @OA\RequestBody(
-    *         required=true,
-    *         @OA\JsonContent(
-    *             type="object",
-    *             @OA\Property(property="items", type="array", @OA\Items(
-    *                 @OA\Property(property="product_id", type="integer"),
-    *                 @OA\Property(property="quantity", type="integer")
-    *             ))
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Order created successfully",
-    *         @OA\JsonContent(
-    *             @OA\Property(property="order_id", type="integer"),
-    *             @OA\Property(property="items", type="array", @OA\Items(
-    *                 @OA\Property(property="product_id", type="integer"),
-    *                 @OA\Property(property="quantity_requested", type="integer"),
-    *                 @OA\Property(property="quantity_to_deliver", type="integer")
-    *             ))
-    *         )
-    *     )
-    * )
-    */
     public function store(Request $request) {
 
         if (count($request->items) === 0) {
@@ -131,7 +65,10 @@ class OrderController extends Controller
             if (!isset($item['product_id']) || empty($item['product_id'])) {
                 throw new \Exception('product_id es requerido para cada item');
             }
-            $product = Product::findOrFail($item['product_id']);
+            $product = Product::find($item['product_id']);
+            if(!$product || $item['quantity'] < 1 ){
+                continue; 
+            }
             $quantityToDeliver = min($product->quantity, $item['quantity']);
             $subtotal = $quantityToDeliver * $product->price;
             $total += $subtotal;
@@ -166,45 +103,6 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-    * @OA\Put(
-    *     path="/api/orders/{id}",
-    *     summary="Actualizar completamente una orden",
-    *     tags={"Orders"},
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,
-    *         description="ID de la orden a actualizar",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\RequestBody(
-    *         required=true,
-    *         @OA\JsonContent(
-    *             type="object",
-    *             @OA\Property(
-    *                 property="items",
-    *                 type="array",
-    *                 description="Lista de productos a actualizar",
-    *                 @OA\Items(
-    *                     type="object",
-    *                     @OA\Property(property="product_id", type="integer", description="ID del producto"),
-    *                     @OA\Property(property="quantity", type="integer", description="Nueva cantidad solicitada")
-    *                 )
-    *             )
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Orden actualizada correctamente",
-    *         @OA\JsonContent(ref="#/components/schemas/Order")
-    *     ),
-    *     @OA\Response(
-    *         response=404,
-    *         description="Orden o producto no encontrado"
-    *     )
-    * )
-    */
     public function updateOrder(Request $request, $orderId) {
 
         if (count($request->items) === 0) {
@@ -218,9 +116,34 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
-        $order->total = 0;
+
+        // valida que en los product_id no hayan repetidos 
+        $listValidation = collect();
+        foreach ($request->items as $item ){
+            if (!$listValidation->contains($item['product_id'])) {
+                $listValidation->push($item['product_id']);
+            }else{
+                return response()->json(['message'=>'product_id repeated'],422);
+            }
+        }
+
+        // coloca cantidad en cero la copia de productos que no llegaron
+        // y si se encontraban antes en la orden
+        // para posteriormente hacer los respectivos cambios
+        $items = collect($request->items);
+        foreach($order->items as $item){
+            if(! $listValidation->contains($item->product_id)){
+                $itemX =  clone $item;
+                $itemX["quantity"] = 0;
+                $items->push($itemX);
+                
+            }
+        }
+
+        $total = 0;
     
-        foreach ($request->items as $item) {
+        foreach ($items as $item) {
+            
             $productId = $item['product_id'];
             $newQuantityRequested = $item['quantity'];
     
@@ -258,7 +181,7 @@ class OrderController extends Controller
                 $orderItem->quantity_requested = $newQuantityRequested;
                 $orderItem->subtotal = $orderItem->quantity_to_deliver * $product->price;
                 $orderItem->save();
-                $order->total += $orderItem->subtotal; 
+                $total += $orderItem->subtotal; 
             } else {
                 // Si el producto no está en la orden, agregarlo como nuevo
                 $quantityToDeliver = min($newQuantityRequested, $product->quantity);
@@ -269,7 +192,7 @@ class OrderController extends Controller
                     'quantity_to_deliver' => $quantityToDeliver,
                     'subtotal'=>$quantityToDeliver*$product->price,
                 ]);
-                $order->total += $newOrderItem->subtotal;
+                $total += $newOrderItem->subtotal;
                 $order->items()->save($newOrderItem);
     
                 // Ajustar el inventario
@@ -279,47 +202,14 @@ class OrderController extends Controller
             // Guardar cambios en el producto
             $product->save();
         }
-    
+        $orderUpdated = Order::with('items.product')->find($orderId);
         return response()->json([
-            'order_id' => $order->id,
-            'items' => $order->items->map(function ($item) {
-                return [
-                    'product_id' => $item->product_id,
-                    'requested' => $item->quantity_requested,
-                    'delivered' => $item->quantity_to_deliver,
-                    'subtotal' => $item->subtotal,
-                ];
-            }),
-            'total' => $order->total,
+            'order_id' => $orderUpdated->id,
+            'items' => $orderUpdated->items,
+            'total' => $total,
         ]);
     }
 
-    /**
-    * @OA\Delete(
-    *     path="/api/orders/{id}",
-    *     summary="Cancelar una orden",
-    *     tags={"Orders"},
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,
-    *         description="ID de la orden a cancelar",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Orden cancelada y productos devueltos",
-    *         @OA\JsonContent(
-    *             type="object",
-    *             @OA\Property(property="message", type="string", example="Orden cancelada y productos devueltos al inventario")
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=404,
-    *         description="Orden no encontrada"
-    *     )
-    * )
-    */
     public function cancelOrder($orderId) {
         $order = Order::with('items')->find($orderId);
     
