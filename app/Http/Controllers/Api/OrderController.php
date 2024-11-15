@@ -63,11 +63,18 @@ class OrderController extends Controller
         $order = Order::create(); // Crear una nueva orden
         $itemsData = [];
         $total = 0;
-    
-        foreach ($request->items as $item) {
-            if (!isset($item['product_id']) || empty($item['product_id'])) {
-                throw new \Exception('product_id es requerido para cada item');
+
+        // valida que en los product_id no hayan repetidos 
+        $listValidation = collect();
+        foreach ($request->items as $item ){
+            if (!$listValidation->contains($item['product_id'])) {
+                $listValidation->push($item['product_id']);
+            }else{
+                return response()->json(['message'=>'product_id repeated'],422);
             }
+        }
+
+        foreach ($request->items as $item) {            
             $product = Product::find($item['product_id']);
             if(!$product || $item['quantity'] < 1 ){
                 continue; 
