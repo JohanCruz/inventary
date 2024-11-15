@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\facades\Validator;
 use Illuminate\Database\QueryException;
 
-class productController extends Controller
+class ProductController extends Controller
 {
     public function index(){        
         $products = Product::latest()->limit(100)->get();

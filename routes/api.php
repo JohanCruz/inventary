@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\productController;
-use App\Http\Controllers\api\orderController;
+use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\OrderController;
 
 Route::get('/products', function () {
     $controller = new ProductController();
