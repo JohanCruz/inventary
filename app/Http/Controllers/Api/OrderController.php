@@ -12,7 +12,10 @@ class OrderController extends Controller
 {      
     public function index(){
         // Obtener todas las órdenes junto con los productos relacionados
-        $orders = Order::with('items.product')->get();
+        //$orders = Order::with('items.product')->get();
+        $orders = Order::with('items.product')->orderBy('created_at', 'desc')
+            ->limit(100)
+            ->get();
         
         foreach($orders as $order){
             $total = 0;
