@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\ProductController;
-use App\Http\Controllers\api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\OrderController;
 
 Route::get('/products', function () {
     $controller = new ProductController();
@@ -31,26 +31,26 @@ Route::delete('/products/{id}', function () {
 }); 
 
 Route::get('/orders', function () {
-    $controller = new orderController();
+    $controller = new OrderController();
     return intercept($controller, 'index');
 }); 
 
 Route::get('/orders/{id}', function () {
-    $controller = new orderController();
+    $controller = new OrderController();
     return intercept($controller, 'show');
 }); 
 
 Route::post('/orders', function () {
-    $controller = new orderController();
+    $controller = new OrderController();
     return intercept($controller, 'store');
 }); 
 
 Route::put('/orders/{id}', function () {
-    $controller = new orderController();
+    $controller = new OrderController();
     return intercept($controller, 'updateOrder');
 }); 
 
 Route::delete('/orders/{id}', function () {
-    $controller = new orderController();
+    $controller = new OrderController();
     return intercept($controller, 'cancelOrder');
 });
