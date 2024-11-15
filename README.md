@@ -20,7 +20,9 @@ si hay problema para visualizar el anterior link otra opcion es https://solar-as
 
 - El borrado de orden de compra cambiará el estatus de la orden a "cancelled", y se devolveran los productos  
 
-
+##
+en el siguiente documento comparto el link de app desplegada y el link de una documentacion en postman adicional con las urls relativas a la app desplegada para probar la app con postman sin hacer despliegue 
+https://docs.google.com/document/d/1kSrADJoRPbWXyHhv_M_foEZLjhs1o1pTPwIZIglEjkM/edit?usp=sharing 
 ## Preguntas o comentarios
  johandanielcruz@gmail.com
  -w  +57 3188705952
