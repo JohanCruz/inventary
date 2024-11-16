@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\OrderController;
 //Route::get('/products/{id}', [ProductController::class, 'show' ], $id );
 Route::get('/products/{id}', function ($id) {
     $controller = new ProductController();
-    return intercept($controller, 'index', $id );
+    return intercept($controller, 'show', $id );
 });
 
 Route::get('/products', function () {
