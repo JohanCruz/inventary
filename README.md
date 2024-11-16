@@ -5,13 +5,15 @@ luego de descargar el fichero, asegurarse de que docker está instalado y funcio
 Docker-compose up
 ```
 Esperar un momento y la aplicación funcionará en https://localhos:8000
+con ese comando la aplicación funciona en windows 11 y teniendo el ws configurado con debian 
 
 ## Documentación
 
 enlace para ver la documentación en postman
-https://solar-astronaut-120115.postman.co/workspace/3d81a255-1128-40d2-8fd9-339b04830168/overview
+https://solar-astronaut-120115.postman.co/workspace/My-Workspace~3d81a255-1128-40d2-8fd9-339b04830168/collection/12905489-d1e7f453-629f-4fb7-b42d-318626459fab?action=share&creator=12905489&active-environment=12905489-177bdbbf-aa76-46c1-9e86-47615e3b9f7b
 
-si hay problema para visualizar el anterior link otra opcion es https://solar-astronaut-120115.postman.co/workspace/My-Workspace~3d81a255-1128-40d2-8fd9-339b04830168/folder/12905489-5419bf31-83fc-4dc8-b343-2492f501e7aa?action=share&creator=12905489&ctx=documentation&active-environment=12905489-177bdbbf-aa76-46c1-9e86-47615e3b9f7b
+**tener en cuenta que la documentacion sirve para dos casos
+la app funcionando en local o la app desplegada con los dos funciona haciendo los respectivos send
 
 
 ## Apreciaciones sobre lógica de negocio usada en la aplicación
@@ -22,25 +24,20 @@ si hay problema para visualizar el anterior link otra opcion es https://solar-as
 
 ## link 
 en el siguiente documento comparto el link de app desplegada y el link de una documentacion en postman adicional con las urls relativas a la app desplegada para probar la app con postman sin hacer despliegue 
-https://docs.google.com/document/d/1kSrADJoRPbWXyHhv_M_foEZLjhs1o1pTPwIZIglEjkM/edit?usp=sharing 
+
 ## Preguntas o comentarios
  johandanielcruz@gmail.com
  -w  +57 3188705952
 
-## Despliegue en DigitalOcean
-con el siguiente comando asegurarse de que la respuesta es  8.2 
-```
-ls /etc/php/
-```
-teniendo una versión inferior actualizarlo se puede siguiendo intrucciones del siguiente link https://php.watch/articles/install-php82-ubuntu-debian 
+## Despliegue en DigitalOcean o en local con imagen Docker
+la imagen https://hub.docker.com/repository/docker/johancruzt/commerce-app/general
+está configurada como publica
 
-instalar composer haciendo sudo composer update
-si hay problemas puede intentar:
+con un droplet activo hacer
+docker pull johancruzt/commerce-app:latest
+docker run -d --name commerce-app -p 8000:8000 johancruzt/commerce-app:latest
+curl http://localhost:8000/api/products
 
-sudo apt-get install -y php-xml
-sudo apt-get install -y php8.2-xml
-sudo service php8.2-fpm restart
-sudo composer install
-sudo composer update
+
 
 
