@@ -36,30 +36,30 @@ Route::delete('/products/{id}', function ($id) {
 
 //Route::get('/orders/{id}', [OrderController::class, 'show' ], $id );
 Route::get('/orders/{id}', function ($id) {
-    $controller = new OderController();
+    $controller = new OrderController();
     return intercept($controller, 'show', $id );
 });
 
-// Route::get('/orders',[OderController::class, 'index' ]);
+// Route::get('/orders',[OrderController::class, 'index' ]);
 Route::get('/orders', function () {
-    $controller = new OderController();
+    $controller = new OrderController();
     return intercept($controller, 'index' );
 });
 
 //Route::post('/orders', [OrderController::class, 'store' ]);
 Route::post('/orders', function () {
-    $controller = new OderController();
+    $controller = new OrderController();
     return intercept($controller, 'store' );
 });
 
 //Route::put('/orders/{id}', [OrderController::class, 'updateOrder' ], $id);
 Route::put('/orders/{id}', function ($id) {
-    $controller = new OderController();
+    $controller = new OrderController();
     return intercept($controller, 'updateOrder', $id );
 });
 
 // Route::delete('/orders/{id}', [OrderController::class, 'cancelOrder' ], $id );
 Route::put('/orders/{id}', function ($id) {
-    $controller = new OderController();
+    $controller = new OrderController();
     return intercept($controller, 'cancelOrder', $id );
 });
