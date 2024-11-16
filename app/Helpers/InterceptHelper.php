@@ -8,8 +8,9 @@ function intercept($controller, $method, ...$params)
         $reflection = new ReflectionMethod($controller, $method);
         $parameters = $reflection->getParameters();
 
-        if (isset($parameters[0]) && $parameters[0]->getType()->getName() === Request::class) {
-            array_unshift($params, app(Request::class));
+        // Si el primer parámetro requiere Request, lo inyectamos automáticamente
+        if (isset($parameters[0]) && $parameters[0]->getType() && $parameters[0]->getType()->getName() === Illuminate\Http\Request::class) {
+            array_unshift($params, app(Illuminate\Http\Request::class));
         }
 
         return call_user_func_array([$controller, $method], $params);
