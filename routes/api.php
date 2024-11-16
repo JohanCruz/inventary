@@ -5,17 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
  
-
-
-Route::get('/products', function () {
-    $controller = new ProductController();
-    return intercept($controller, 'index');
-});
-
 //Route::get('/products/{id}', [ProductController::class, 'show' ], $id );
 Route::get('/products/{id}', function ($id) {
     $controller = new ProductController();
     return intercept($controller, 'index', $id );
+});
+
+Route::get('/products', function () {
+    $controller = new ProductController();
+    return intercept($controller, 'index');
 });
 
 // Route::post('/products', [ProductController::class, 'store' ]);
@@ -36,16 +34,16 @@ Route::delete('/products/{id}', function ($id) {
     return intercept($controller, 'delete', $id );
 });
 
-// Route::get('/orders',[OderController::class, 'index' ]);
-Route::get('/orders', function () {
-    $controller = new OderController();
-    return intercept($controller, 'index' );
-});
-
 //Route::get('/orders/{id}', [OrderController::class, 'show' ], $id );
 Route::get('/orders/{id}', function ($id) {
     $controller = new OderController();
     return intercept($controller, 'show', $id );
+});
+
+// Route::get('/orders',[OderController::class, 'index' ]);
+Route::get('/orders', function () {
+    $controller = new OderController();
+    return intercept($controller, 'index' );
 });
 
 //Route::post('/orders', [OrderController::class, 'store' ]);
