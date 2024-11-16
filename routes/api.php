@@ -13,7 +13,7 @@ Route::get('/products', function () {
 });
 
 //Route::get('/products/{id}', [ProductController::class, 'show' ], $id );
-Route::get('/products/{id}', function () {
+Route::get('/products/{id}', function ($id) {
     $controller = new ProductController();
     return intercept($controller, 'index', $id );
 });
@@ -25,13 +25,13 @@ Route::post('/products/{id}', function () {
 });
 
 //Route::patch('/products/{id}', [ProductController::class, 'update' ], $id);
-Route::patch('/products/{id}', function () {
+Route::patch('/products/{id}', function ($id) {
     $controller = new ProductController();
     return intercept($controller, 'update', $id );
 });
 
 // Route::delete('/products/{id}', [ProductController::class, 'delete' ], $id );
-Route::delete('/products/{id}', function () {
+Route::delete('/products/{id}', function ($id) {
     $controller = new ProductController();
     return intercept($controller, 'delete', $id );
 });
@@ -43,7 +43,7 @@ Route::get('/orders', function () {
 });
 
 //Route::get('/orders/{id}', [OrderController::class, 'show' ], $id );
-Route::get('/orders/{id}', function () {
+Route::get('/orders/{id}', function ($id) {
     $controller = new OderController();
     return intercept($controller, 'show', $id );
 });
@@ -55,13 +55,13 @@ Route::post('/orders', function () {
 });
 
 //Route::put('/orders/{id}', [OrderController::class, 'updateOrder' ], $id);
-Route::put('/orders/{id}', function () {
+Route::put('/orders/{id}', function ($id) {
     $controller = new OderController();
     return intercept($controller, 'updateOrder', $id );
 });
 
 // Route::delete('/orders/{id}', [OrderController::class, 'cancelOrder' ], $id );
-Route::put('/orders/{id}', function () {
+Route::put('/orders/{id}', function ($id) {
     $controller = new OderController();
     return intercept($controller, 'cancelOrder', $id );
 });
