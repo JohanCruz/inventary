@@ -9,16 +9,16 @@ use Illuminate\Database\QueryException;
 
 class ProductController extends Controller
 {
-    public function index(){
-        $products = Product::all();
+    public function index(){        
+        $products = Product::latest()->limit(100)->get();
 
-        // if($products->isEmpty()){
-        //     $data = [
-        //         'message'=>'There are no products',
-        //         'status'=>200
-        //     ];
-        //     return response()->json($data, 200);
-        // }
+        if($products->isEmpty()){
+            $data = [
+                'message'=>'There are no products',
+                'status'=>200
+            ];
+            return response()->json($data, 200);
+        }
         $data = ['products'=> $products];
         return response()->json($data, 200);
     }
