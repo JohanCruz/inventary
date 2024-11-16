@@ -59,7 +59,7 @@ Route::put('/orders/{id}', function ($id) {
 });
 
 // Route::delete('/orders/{id}', [OrderController::class, 'cancelOrder' ], $id );
-Route::put('/orders/{id}', function ($id) {
+Route::delete('/orders/{id}', function ($id) {
     $controller = new OrderController();
     return intercept($controller, 'cancelOrder', $id );
 });
