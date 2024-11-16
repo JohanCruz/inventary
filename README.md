@@ -22,8 +22,7 @@ la app funcionando en local o la app desplegada con los dos funciona haciendo lo
 
 - El borrado de orden de compra cambiará el estatus de la orden a "cancelled", y se devolveran los productos  
 
-## link 
-en el siguiente documento comparto el link de app desplegada y el link de una documentacion en postman adicional con las urls relativas a la app desplegada para probar la app con postman sin hacer despliegue 
+
 
 ## Preguntas o comentarios
  johandanielcruz@gmail.com
@@ -37,6 +36,10 @@ con un droplet activo hacer
 docker pull johancruzt/commerce-app:latest
 docker run -d --name commerce-app -p 8000:8000 johancruzt/commerce-app:latest
 curl http://localhost:8000/api/products
+
+para utilizar el comando docker
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-es
+tener en cuenta las primeras 5 indicaciones de comandos
 
 
 
