@@ -15,6 +15,8 @@ RUN apt-get update && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     composer install
 
+RUN composer install --no-dev --optimize-autoloader  
+  
 # Configura caché de Laravel y optimiza la aplicación
 RUN php artisan config:cache
 RUN php artisan route:cache
